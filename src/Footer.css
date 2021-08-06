@@ -1,0 +1,6 @@
+div.footer {
+    background-image: url('../public/image/footer.jpg');
+}
+div.footerElement {
+    margin-top: 45px;
+}
