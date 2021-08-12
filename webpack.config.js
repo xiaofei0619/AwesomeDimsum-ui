@@ -2,6 +2,11 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+console.log('.......');
+console.log(JSON.stringify(dotenv.config().parsed));
+console.log(JSON.stringify(dotenv.config()));
 
 const browserConfig = {
   mode: 'development',
@@ -50,6 +55,7 @@ const browserConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __isBrowser__: 'true',
+      'process.env.RUN_ENV': '"any"',
     }),
   ],
   devtool: 'source-map',

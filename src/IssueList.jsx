@@ -103,6 +103,8 @@ class IssueList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log('Issue List...');
+    console.log(this.props);
     const {
       location: { search: prevSearch },
       match: { params: { id: prevId } },

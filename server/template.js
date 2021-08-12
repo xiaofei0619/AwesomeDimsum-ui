@@ -9,6 +9,7 @@ export default function template(body, initialData, userData, menuData) {
     <title>Pro MERN Stack</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" >
+    <link href="/rsuite-default.min.css" rel="stylesheet">
 
     <script src="https://apis.google.com/js/api:client.js"></script>
     

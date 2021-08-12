@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  Nav, Modal, Button, NavDropdown,
+  Nav, Button, NavDropdown,
 } from 'react-bootstrap';
+import { Modal } from 'rsuite';
 import withToast from './withToast.jsx';
 
 class SigninNavItem extends React.Component {
@@ -107,7 +108,7 @@ class SigninNavItem extends React.Component {
         <Nav.Item onClick={this.showModal}>
           SIGN IN
         </Nav.Item>
-        <Modal keyboard show={showing} onHide={this.hideModal} size="sm">
+        <Modal show={showing} onHide={this.hideModal} size="sm">
           <Modal.Header closeButton>
             <Modal.Title>Sign in</Modal.Title>
           </Modal.Header>

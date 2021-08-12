@@ -10,9 +10,14 @@ const app = express();
 SourceMapSupport.install();
 dotenv.config();
 
+// After importing rsuite
+// Substitute all process.env to env for solving
+// process.env.RUN_ENV - process is not defined error
+const { env } = process;
+
 // use Hot Module Replacement
-const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
-if (enableHMR && (process.env.NODE_ENV !== 'production')) {
+const enableHMR = (env.ENABLE_HMR || 'true') === 'true';
+if (enableHMR && (env.NODE_ENV !== 'production')) {
   console.log('Adding dev middleware, enabling HMR');
 
   /* eslint "global-require": "off" */
@@ -34,31 +39,32 @@ if (enableHMR && (process.env.NODE_ENV !== 'production')) {
 
 app.use(express.static('public'));
 
-const apiProxyTarget = process.env.API_PROXY_TARGET;
+const apiProxyTarget = env.API_PROXY_TARGET;
 if (apiProxyTarget) {
-  app.use('/graphql', proxy({ target: apiProxyTarget, changeOrigin: true }));
-  app.use('/auth', proxy({ target: apiProxyTarget, changeOrigin: true }));
+  app.use('/graphql', proxy({ target: apiProxyTarget }));
+  app.use('/auth', proxy({ target: apiProxyTarget }));
 }
 
-if (!process.env.UI_API_ENDPOINT) {
-  process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
+if (!env.UI_API_ENDPOINT) {
+  env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
 }
 
-if (!process.env.UI_SERVER_API_ENDPOINT) {
-  process.env.UI_SERVER_API_ENDPOINT = process.env.UI_API_ENDPOINT;
+if (!env.UI_SERVER_API_ENDPOINT) {
+  env.UI_SERVER_API_ENDPOINT = env.UI_API_ENDPOINT;
 }
 
-if (!process.env.UI_AUTH_ENDPOINT) {
-  process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
+if (!env.UI_AUTH_ENDPOINT) {
+  env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
 }
 
+// change env to env2 for differentiating
 app.get('/env.js', (req, res) => {
-  const env = {
-    UI_API_ENDPOINT: process.env.UI_API_ENDPOINT,
-    UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  const env2 = {
+    UI_API_ENDPOINT: env.UI_API_ENDPOINT,
+    UI_AUTH_ENDPOINT: env.UI_AUTH_ENDPOINT,
+    GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
   };
-  res.send(`window.ENV = ${JSON.stringify(env)}`);
+  res.send(`window.ENV = ${JSON.stringify(env2)}`);
 });
 
 app.get('*', (req, res, next) => {
@@ -66,7 +72,7 @@ app.get('*', (req, res, next) => {
   render(req, res, next);
 });
 
-const port = process.env.PORT || 8000;
+const port = env.PORT || 8000;
 
 app.listen(port, () => {
   console.log(`UI started on port ${port}`);
