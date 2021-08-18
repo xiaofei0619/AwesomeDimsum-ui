@@ -1,5 +1,6 @@
 import React from 'react';
-import { Accordion, Card } from 'react-bootstrap';
+// import { Accordion, Card } from 'react-bootstrap';
+import { PanelGroup, Panel } from 'rsuite';
 import store from './store.js';
 import Dish from './Dish.jsx';
 import graphQLFetch from './graphQLFetch.js';
@@ -72,7 +73,7 @@ export default class Menu extends React.Component {
 
       return (
         <div className="container">
-          <Accordion defaultActiveKey="0">
+          {/* <Accordion defaultActiveKey="0">
             <Card>
               <Accordion.Toggle as={Card.Header} eventKey="0">
                 STEAMED 蒸
@@ -145,7 +146,39 @@ export default class Menu extends React.Component {
                 </Card.Body>
               </Accordion.Collapse>
             </Card>
-          </Accordion>
+          </Accordion> */}
+          <PanelGroup accordion bordered>
+            <Panel header="STEAMED 蒸" defaultExpanded>
+              <div className="row">
+                {steamedCards}
+              </div>
+            </Panel>
+            <Panel header="BAKED 焗">
+              <div className="row">
+                {bakedCards}
+              </div>
+            </Panel>
+            <Panel header="FRIED 酥炸">
+              <div className="row">
+                {friedCards}
+              </div>
+            </Panel>
+            <Panel header="PAN-FRIED 香煎">
+              <div className="row">
+                {panFriedCards}
+              </div>
+            </Panel>
+            <Panel header="RICE ROLL-CONGEE 肠粉粥">
+              <div className="row">
+                {riceRollCongeeCards}
+              </div>
+            </Panel>
+            <Panel header="DESSERTS 甜品">
+              <div className="row">
+                {dessertsCards}
+              </div>
+            </Panel>
+          </PanelGroup>
         </div>
       );
     };
@@ -179,7 +212,7 @@ export default class Menu extends React.Component {
       });
     }
     return (
-      <div>
+      <div style={{ minHeight: '600px', marginBottom: '40px' }}>
         <div className="row mt-5 mb-3 justify-content-center">
           <div className="col-4 col-lg-1">
             Search Menu

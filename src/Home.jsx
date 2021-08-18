@@ -7,7 +7,7 @@ function Home() {
   };
   const carouselImgStyle = {
     width: '100%',
-    height: '710px',
+    height: '748px',
   };
   const carouselCaptionStyle = {
     top: '50%',

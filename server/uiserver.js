@@ -15,6 +15,9 @@ dotenv.config();
 // process.env.RUN_ENV - process is not defined error
 const { env } = process;
 
+console.log('environ');
+console.log(JSON.stringify(env, null, 2));
+
 // use Hot Module Replacement
 const enableHMR = (env.ENABLE_HMR || 'true') === 'true';
 if (enableHMR && (env.NODE_ENV !== 'production')) {
@@ -41,8 +44,8 @@ app.use(express.static('public'));
 
 const apiProxyTarget = env.API_PROXY_TARGET;
 if (apiProxyTarget) {
-  app.use('/graphql', proxy({ target: apiProxyTarget, changeOrigin: true }));
-  app.use('/auth', proxy({ target: apiProxyTarget, changeOrigin: true }));
+  app.use('/graphql', proxy({ target: apiProxyTarget }));
+  app.use('/auth', proxy({ target: apiProxyTarget }));
 }
 
 if (!env.UI_API_ENDPOINT) {
@@ -63,16 +66,18 @@ app.get('/env.js', (req, res) => {
     UI_API_ENDPOINT: env.UI_API_ENDPOINT,
     UI_AUTH_ENDPOINT: env.UI_AUTH_ENDPOINT,
     GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
+    GOOGLE_MAP_KEY: env.GOOGLE_MAP_KEY,
   };
   res.send(`window.ENV = ${JSON.stringify(env2)}`);
 });
 
 app.get('*', (req, res, next) => {
+  console.log('what is request url?');
   console.log(req.url);
   render(req, res, next);
 });
 
-const port = env.PORT || 8000;
+const port = env.UI_SERVER_PORT || 8000;
 
 app.listen(port, () => {
   console.log(`UI started on port ${port}`);

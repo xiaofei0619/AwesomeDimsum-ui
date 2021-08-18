@@ -12,16 +12,17 @@ import './Footer.css';
 
 function Footer() {
   return (
-    <div className="footer">
+    <div id="footer">
       <div className="container">
         <div className="row justify-content-center">
           <div className="footerElement col-4 col-lg-2">
             <h5>LINK</h5>
             <ul className="list-unstyled">
-              <li><Link to="/issues">Home</Link></li>
-              <li><Link to="/edit/:id">About Us</Link></li>
-              <li><Link to="/report">Menu</Link></li>
-              <li><Link to="/about">Contact Us</Link></li>
+              <li><Link to="/home">Home</Link></li>
+              <li><Link to="/menu">Menu</Link></li>
+              <li><Link to="/cart">Shopping Cart</Link></li>
+              <li><Link to="/trackorder">Track My Order</Link></li>
+              <li><Link to="/getintouch">Get In Touch</Link></li>
             </ul>
           </div>
           <div className="footerElement col-8 col-lg-3">

@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const dotenv = require('dotenv');
 
 console.log('.......');
-console.log(JSON.stringify(dotenv.config().parsed));
+console.log(JSON.stringify(dotenv.config().parqsed));
 console.log(JSON.stringify(dotenv.config()));
 
 const browserConfig = {

@@ -23,8 +23,6 @@ class CartRow extends React.Component {
     } else if (selectAmount > dish.stock) {
       const copiedCartItems = JSON.parse(JSON.stringify(cartItems));
       copiedCartItems[dish.dishId.toString()] = dish.stock;
-      console.log('testing the stock under slected amount]]]]]]');
-      console.log(copiedCartItems);
       user.updateCartItems(copiedCartItems);
       Alert.warning(`Stock of ${dish.name} is low. The amount in your cart has been adjusted.`, 4000);
     }

@@ -39,22 +39,25 @@ class MyNavBar extends React.Component {
                 <Nav.Link>HOME</Nav.Link>
               </LinkContainer>
               <LinkContainer exact to="/menu">
-                <Nav.Link>ORDER</Nav.Link>
+                <Nav.Link>MENU</Nav.Link>
               </LinkContainer>
-              <LinkContainer exact to="/report">
-                <Nav.Link>REPORT</Nav.Link>
+              <LinkContainer exact to="/trackorder">
+                <Nav.Link>TRACK ORDER</Nav.Link>
               </LinkContainer>
-              <LinkContainer exact to="/issues">
-                <Nav.Link>ISSUES</Nav.Link>
+              <LinkContainer exact to="/getintouch">
+                <Nav.Link>GET IN TOUCH</Nav.Link>
               </LinkContainer>
-              <LinkContainer exact to="/about">
-                <Nav.Link>ABOUT</Nav.Link>
+              <LinkContainer exact to="/orders">
+                <Nav.Link>ORDER MANAGER</Nav.Link>
+              </LinkContainer>
+              <LinkContainer exact to="/stocks">
+                <Nav.Link>STOCK MANAGER</Nav.Link>
               </LinkContainer>
             </Nav>
             <Nav>
-              <Nav.Link>
+              {/* <Nav.Link>
                 <IssueAddNavItem user={user} />
-              </Nav.Link>
+              </Nav.Link> */}
               <Nav.Link>
                 <CartNavItem />
               </Nav.Link>
@@ -91,13 +94,32 @@ export default class Page extends React.Component {
           cartItems: items,
         },
       }));
+
+      try {
+        console.log('Updating localStorage....');
+        localStorage.setItem('cartItems', JSON.stringify(items));
+      } catch (err) {
+        console.log(err);
+        console.log("LocalStorage doesn't exist, can not update the local storage");
+      }
     };
+
+    let cartItems = {};
+    try {
+      console.log('Reading localStorage....');
+      if (localStorage.getItem('cartItems') !== null) {
+        cartItems = JSON.parse(localStorage.getItem('cartItems'));
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("LocalStorage doesn't exist, you probably run with server-side rendering.");
+    }
 
     this.state = {
       user: {
         signedIn: userInfo.signedIn,
         givenName: userInfo.givenName,
-        cartItems: {},
+        cartItems,
         updateCartItems,
       },
     };
@@ -130,20 +152,24 @@ export default class Page extends React.Component {
 
   render() {
     const { user } = this.state;
-    console.log('!!!!!!!!');
-    console.log(user);
     if (user == null) return null;
     return (
-      <div>
-        <UserContext.Provider value={user}>
-          <MyNavBar onUserChange={this.onUserChange} />
-        </UserContext.Provider>
-        <div className="container-fluid px-0">
-          <UserContext.Provider value={user}>
-            <Contents />
-          </UserContext.Provider>
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        <div style={{ paddingBottom: '95px' }}>
+          <div>
+            <UserContext.Provider value={user}>
+              <MyNavBar onUserChange={this.onUserChange} />
+            </UserContext.Provider>
+          </div>
+          <div className="container-fluid px-0">
+            <UserContext.Provider value={user}>
+              <Contents />
+            </UserContext.Provider>
+          </div>
         </div>
-        <Footer />
+        <div style={{ position: 'absolute', bottom: '0px', width: '100%', height: '95px' }}>
+          <Footer />
+        </div>
       </div>
     );
   }

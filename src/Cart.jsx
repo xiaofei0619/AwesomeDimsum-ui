@@ -3,15 +3,16 @@ import {
   Button, Table,
 } from 'react-bootstrap';
 import {
-  PanelGroup, Panel,
+  PanelGroup, Panel, Alert,
 } from 'rsuite';
 import { LinkContainer } from 'react-router-bootstrap';
+import { withRouter } from 'react-router-dom';
 import graphQLFetch from './graphQLFetch.js';
 import store from './store.js';
 import UserContext from './UserContext.js';
 import CartRow from './CartRow.jsx';
 
-class Cart extends React.Component {
+class CartPlain extends React.Component {
   static async fetchData() {
     const data = await graphQLFetch(`query {
       stockList {
@@ -49,7 +50,7 @@ class Cart extends React.Component {
   }
 
   async loadData() {
-    const data = await Cart.fetchData();
+    const data = await CartPlain.fetchData();
     if (data) {
       this.setState({
         stockList: data.stockList,
@@ -99,11 +100,6 @@ class Cart extends React.Component {
       dish => Object.keys(cartItems).indexOf(dish.dishId.toString()) !== -1,
     );
 
-    console.log('???Stock List???????');
-    console.log(stockList);
-    console.log(mergeList);
-    console.log(cartDishes);
-
     const cartRows = cartDishes.map(dish => (
       <CartRow
         key={dish.id}
@@ -128,6 +124,47 @@ class Cart extends React.Component {
     const tax = subtotalDiscount * 0.1;
     const total = subtotalDiscount + tax;
 
+    const onSubmit = async (e) => {
+      // e.preventDefault();
+      console.log('Get in onsubmit');
+      const data = await CartPlain.fetchData();
+      if (data) {
+        const newStockList = data.stockList;
+
+        const newMergeList = [];
+        for (let i = 0; i < dishes.length; i += 1) {
+          newMergeList.push({
+            ...dishes[i],
+            ...(newStockList.find(item => item.dishId === dishes[i].dishId)),
+          });
+        }
+        const newCartDishes = newMergeList.filter(
+          dish => Object.keys(cartItems).indexOf(dish.dishId.toString()) !== -1,
+        );
+
+        let isValid = Boolean(true);
+        for (let k = 0; k < newCartDishes.length; k += 1) {
+          console.log('Get in onsubmit loop');
+          const amount = cartItems[newCartDishes[k].dishId.toString()];
+          const { stock } = newCartDishes[k];
+          if (amount > stock) {
+            isValid = Boolean(false);
+          }
+        }
+
+        console.log(isValid);
+        if (!isValid) {
+          e.preventDefault();
+          Alert.error('Stock has been updated. Please press refresh button to see the changes!', 5000);
+        } else {
+          // eslint-disable-next-line react/destructuring-assignment
+          this.props.history.push('/placeorder');
+        }
+      } else {
+        e.preventDefault();
+      }
+    };
+
     return (
       <div
         className="container"
@@ -136,6 +173,7 @@ class Cart extends React.Component {
           marginBottom: '20px',
           marginLeft: '20px',
           marginRight: '10px',
+          minHeight: '600px',
         }}
       >
         <PanelGroup>
@@ -154,25 +192,7 @@ class Cart extends React.Component {
                 {cartRows}
               </tbody>
             </Table>
-
           </Panel>
-          {/* <Panel>
-            <Form>
-              <Form.Group as={Row}>
-                <Form.Label htmlFor="request" column md={2}>Special Request</Form.Label>
-                <Col md={10}>
-                  <Form.Control
-                    as="textarea"
-                    id="comment"
-                    name="comment"
-                    rows={6}
-                    value={request}
-                    onChange={this.handleInputChange}
-                  />
-                </Col>
-              </Form.Group>
-            </Form>
-          </Panel> */}
           <Panel>
             <div className="row">
               <div className="col-10 col-md-8">
@@ -209,7 +229,7 @@ class Cart extends React.Component {
             <div className="d-flex justify-content-end">
               <div>
                 <Button
-                  size="sm"
+                  size="md"
                   variant="dark"
                   onClick={this.loadData}
                 >
@@ -218,13 +238,13 @@ class Cart extends React.Component {
               </div>
               <div style={{ marginLeft: '5px' }}>
                 <Button
-                  size="sm"
+                  size="md"
                   variant="dark"
+                  onClick={onSubmit}
                 >
                   Fill Pickup Info
                 </Button>
               </div>
-              <div />
             </div>
           </Panel>
         </PanelGroup>
@@ -233,5 +253,7 @@ class Cart extends React.Component {
   }
 }
 
-Cart.contextType = UserContext;
+CartPlain.contextType = UserContext;
+const Cart = withRouter(CartPlain);
+delete Cart.contextType;
 export default Cart;

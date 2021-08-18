@@ -15,8 +15,12 @@ export default async function render(req, res) {
   const activeRoute = routes.find(
     route => matchPath(req.path, route),
   );
+  console.log('what is active route??');
+  console.log(activeRoute);
+  console.log(activeRoute.component);
 
   let initialData;
+
   if (activeRoute && activeRoute.component.fetchData) {
     console.log('In render.jsx logging initial Data');
     const match = matchPath(req.path, activeRoute);

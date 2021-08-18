@@ -164,6 +164,7 @@ export default class AddComment extends React.Component {
                     onBlur={this.handleBlur}
                     onChange={this.handleInputChange}
                   />
+                  <Form.Control.Feedback type="invalid">{errors.comment}</Form.Control.Feedback>
                 </Col>
               </Form.Group>
               <Col md={{ size: 10, offset: 2 }}>
