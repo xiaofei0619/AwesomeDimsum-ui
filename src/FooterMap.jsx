@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import {
   GoogleMap,
   withScriptjs,
@@ -55,8 +56,40 @@ const WrappedMap = withScriptjs(withGoogleMap(Map));
 // ))));
 
 export default function FooterMap() {
+  const [userLat, setUserLat] = useState(null);
+  const [userLng, setUserLng] = useState(null);
+  const [userStatus, setUserStatus] = useState(null);
+  console.log('In the map!!!!');
+  console.log(userStatus);
+
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setUserStatus('Geolocation is not supported by your browser');
+    } else {
+      setUserStatus('Locating...');
+      // console.log(navigator.geolocation.getCurrentPosition);
+      navigator.geolocation.getCurrentPosition((position) => {
+        setUserStatus('Success');
+        setUserLat(position.coords.latitude);
+        setUserLng(position.coords.longitude);
+      }, (err) => {
+        setUserStatus('Unable to retrieve your location');
+        console.log(err);
+      });
+    }
+  };
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      <Button
+        variant="dark"
+        onClick={getLocation}
+      >
+        Get My Current Location
+      </Button>
+      <p>{userStatus}</p>
+      {userLat && <p>Latitude: {userLat}</p>}
+      {userLng && <p>Longitude: {userLng}</p>}
       <WrappedMap
         googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${window.ENV.GOOGLE_MAP_KEY}&v=3.exp&libraries=geometry,drawing,places`}
         loadingElement={<div style={{ height: '100%' }} />}
